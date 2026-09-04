@@ -1,0 +1,17 @@
+CLAIM FORM
+Incident Date: 2023-11-20
+Incident Time: 14:30
+Driver: John Smith
+Claim Type: Accident
+Summary: Struck a stationary object in a parking lot.
+
+---
+CUSTOMER DESCRIPTION
+I was pulling into my parking spot at the grocery store on Nov 20th around 2:30 PM. I misjudged the distance and lightly bumped a concrete pillar. It only damaged the front bumper and left headlight.
+
+---
+REPAIR ESTIMATE
+Date of Assessment: 2023-11-21
+Vehicle: 2020 Honda Civic
+Damage Assessed: Scuffs and crack on front bumper cover. Left headlight assembly shattered.
+Estimated Cost: $1,250.00

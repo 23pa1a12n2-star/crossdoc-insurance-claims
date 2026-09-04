@@ -1,0 +1,15 @@
+CLAIM FORM
+Incident Date: 2023-08-12
+Incident Time: 10:00
+Driver: Alice Johnson
+Claim Type: Accident
+Summary: Rear-ended at a traffic light.
+
+---
+CUSTOMER DESCRIPTION
+I was sitting at a red light on the morning of August 12. At exactly 10 AM, a van slammed into the back of my car.
+
+---
+FIR
+Incident Log Date: 2023-08-14
+Record: Officer responded to a call regarding a 2-vehicle collision. The driver, Ms. Johnson, stated the accident occurred on the evening of August 13th at approximately 21:00.

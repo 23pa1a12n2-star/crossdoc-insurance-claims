@@ -1,0 +1,17 @@
+CLAIM FORM
+Incident Date: 2024-01-15
+Incident Time: 08:30
+Driver: Raj Malhotra
+Claim Type: Accident
+Summary: Hit a divider on the highway. Front of vehicle damaged.
+
+---
+CUSTOMER DESCRIPTION
+On January 15th, around 8:30 AM, I was driving on the national highway when I swerved to avoid a stray animal. I hit the central divider. Only the front bumper and front-left fender were damaged. The rest of the vehicle is completely fine.
+
+---
+REPAIR ESTIMATE
+Date of Assessment: 2024-01-16
+Vehicle: 2022 Hyundai Creta
+Damage Assessed: Rear bumper cracked, rear axle bent, rear suspension damaged. Undercarriage scraping evident at rear.
+Estimated Cost: $4,800.00

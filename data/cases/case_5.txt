@@ -1,0 +1,17 @@
+CLAIM FORM
+Incident Date: 2024-05-02
+Incident Time: 23:00
+Driver: Vikram Reddy
+Claim Type: Theft
+Summary: Vehicle was stolen from outside my residence.
+
+---
+CUSTOMER DESCRIPTION
+On the night of May 2nd around 11 PM, I parked my car outside my house as usual. When I came out the next morning on May 3rd, the car was gone. I immediately went to the police station to report it but was told to come back later. I am filing this claim now and have attached the repair estimate from a garage just in case.
+
+---
+REPAIR ESTIMATE
+Date of Assessment: 2024-05-05
+Vehicle: 2019 Toyota Innova
+Damage Assessed: No physical vehicle available for assessment. Customer reports vehicle stolen.
+Estimated Cost: N/A

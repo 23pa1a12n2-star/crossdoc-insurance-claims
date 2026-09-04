@@ -1,0 +1,17 @@
+CLAIM FORM
+Incident Date: 2024-06-18
+Incident Time: 15:00
+Driver: Arjun Patel
+Claim Type: Accident
+Summary: Vehicle damaged during a track day event.
+
+---
+CUSTOMER DESCRIPTION
+I was participating in a weekend track day event at the Kari Motor Speedway on June 18th. During one of my timed laps around 3 PM, I lost control on a corner and my car spun into the barrier. The front and right side of my car took heavy damage. It was a competitive racing event organized by a local car enthusiasts club.
+
+---
+REPAIR ESTIMATE
+Date of Assessment: 2024-06-19
+Vehicle: 2023 Volkswagen Polo GT
+Damage Assessed: Front bumper destroyed, right fender crushed, right door panel damaged, windshield cracked from impact.
+Estimated Cost: $6,500.00

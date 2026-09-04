@@ -1,0 +1,17 @@
+CLAIM FORM
+Incident Date: 2024-03-10
+Incident Time: 16:00
+Driver: Priya Sharma
+Claim Type: Accident
+Summary: Side collision at an intersection.
+
+---
+CUSTOMER DESCRIPTION
+On March 10th at around 4 PM, another car ran a red light and hit the left side of my car at the intersection near MG Road. The left doors were dented badly. I reported this to the insurance company on April 25th.
+
+---
+REPAIR ESTIMATE
+Date of Assessment: 2024-04-26
+Vehicle: 2021 Maruti Suzuki Baleno
+Damage Assessed: Left front door dented, left rear door dented, left side mirror broken.
+Estimated Cost: $2,100.00
