@@ -32,7 +32,7 @@ logger = logging.getLogger(__name__)
 # Initialize Gemini client
 client = genai.Client(api_key=os.environ.get("GEMINI_API_KEY", ""))
 
-MODEL = "gemini-2.0-flash"
+MODEL = "gemini-3.5-flash-lite"
 
 EXTRACTION_SYSTEM_PROMPT = """You are a precise insurance document fact extractor.
 Given a document, extract structured facts into JSON format.

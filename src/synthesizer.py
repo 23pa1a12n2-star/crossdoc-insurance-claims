@@ -24,7 +24,7 @@ logger = logging.getLogger(__name__)
 
 client = genai.Client(api_key=os.environ.get("GEMINI_API_KEY", ""))
 
-MODEL = "gemini-2.0-flash"
+MODEL = "gemini-3.5-flash-lite"
 
 SYNTHESIS_SYSTEM_PROMPT = """You are an insurance claims report writer.
 You are given a structured evidence package that contains:
