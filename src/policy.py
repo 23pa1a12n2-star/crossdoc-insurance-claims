@@ -38,7 +38,6 @@ MAX_CLAIM_WINDOW_DAYS = 30
 REQUIRED_DOCS = {
     ClaimType.THEFT: "fir",
     ClaimType.MALICIOUS_DAMAGE: "fir",
-    ClaimType.ACCIDENT: "repair_estimate",
 }
 
 # Policy exclusion keywords mapped to clauses

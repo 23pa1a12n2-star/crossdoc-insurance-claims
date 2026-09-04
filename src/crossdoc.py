@@ -268,6 +268,16 @@ def _compare_enum_field(
             explanation=f"{field_name} values are consistent across documents.",
         )
 
+    # Specific fix to handle MULTIPLE overlapping with a specific damage area
+    if field_name == "damage_area" and "MULTIPLE" in meaningful:
+        return FieldComparison(
+            field_name=field_name,
+            status=CrossDocStatus.COMPATIBLE,
+            values=values,
+            original_values=originals,
+            explanation=f"{field_name} values overlap (one document specifies a precise area, another indicates multiple).",
+        )
+
     return FieldComparison(
         field_name=field_name,
         status=CrossDocStatus.CONTRADICTION,
