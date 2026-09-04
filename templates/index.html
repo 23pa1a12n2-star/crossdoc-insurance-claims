@@ -1,0 +1,378 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CrossDoc — Insurance Claims Evidence Review</title>
+    <meta name="description" content="AI-powered cross-document evidence reconciliation for motor insurance claims">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        * { font-family: 'Inter', sans-serif; }
+        body { background: #0a0e1a; }
+
+        .glass-card {
+            background: rgba(15, 23, 42, 0.7);
+            backdrop-filter: blur(20px);
+            border: 1px solid rgba(99, 102, 241, 0.15);
+        }
+
+        .glow-border { box-shadow: 0 0 20px rgba(99, 102, 241, 0.1); }
+
+        .status-match { background: rgba(34, 197, 94, 0.15); color: #4ade80; border: 1px solid rgba(34, 197, 94, 0.3); }
+        .status-compatible { background: rgba(59, 130, 246, 0.15); color: #60a5fa; border: 1px solid rgba(59, 130, 246, 0.3); }
+        .status-contradiction { background: rgba(239, 68, 68, 0.15); color: #f87171; border: 1px solid rgba(239, 68, 68, 0.3); }
+        .status-missing { background: rgba(250, 204, 21, 0.15); color: #fbbf24; border: 1px solid rgba(250, 204, 21, 0.3); }
+        .status-ambiguous { background: rgba(168, 85, 247, 0.15); color: #c084fc; border: 1px solid rgba(168, 85, 247, 0.3); }
+
+        .decision-approve { background: linear-gradient(135deg, rgba(34, 197, 94, 0.2), rgba(16, 185, 129, 0.1)); border: 2px solid #22c55e; }
+        .decision-reject { background: linear-gradient(135deg, rgba(239, 68, 68, 0.2), rgba(220, 38, 38, 0.1)); border: 2px solid #ef4444; }
+        .decision-request_info { background: linear-gradient(135deg, rgba(250, 204, 21, 0.2), rgba(234, 179, 8, 0.1)); border: 2px solid #eab308; }
+        .decision-escalate { background: linear-gradient(135deg, rgba(249, 115, 22, 0.2), rgba(234, 88, 12, 0.1)); border: 2px solid #f97316; }
+
+        textarea {
+            background: rgba(15, 23, 42, 0.5);
+            border: 1px solid rgba(99, 102, 241, 0.2);
+            color: #e2e8f0;
+            transition: border-color 0.3s;
+        }
+        textarea:focus { border-color: rgba(99, 102, 241, 0.6); outline: none; }
+        textarea::placeholder { color: rgba(148, 163, 184, 0.5); }
+
+        .pulse-ring {
+            animation: pulse-ring 1.5s cubic-bezier(0.215, 0.61, 0.355, 1) infinite;
+        }
+        @keyframes pulse-ring {
+            0% { transform: scale(0.8); opacity: 1; }
+            80%, 100% { transform: scale(1.3); opacity: 0; }
+        }
+
+        .fade-in { animation: fadeIn 0.5s ease-out; }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+
+        .loading-dots::after {
+            content: '';
+            animation: dots 1.5s steps(4, end) infinite;
+        }
+        @keyframes dots {
+            0%, 20% { content: ''; }
+            40% { content: '.'; }
+            60% { content: '..'; }
+            80%, 100% { content: '...'; }
+        }
+
+        select {
+            background: rgba(15, 23, 42, 0.5);
+            border: 1px solid rgba(99, 102, 241, 0.2);
+            color: #e2e8f0;
+        }
+
+        .matrix-row { transition: all 0.3s ease; }
+        .matrix-row:hover { background: rgba(99, 102, 241, 0.05); }
+    </style>
+</head>
+<body class="min-h-screen text-slate-200">
+
+    <!-- Header -->
+    <header class="border-b border-indigo-500/10 py-4 px-6">
+        <div class="max-w-7xl mx-auto flex items-center justify-between">
+            <div class="flex items-center gap-3">
+                <div class="w-10 h-10 rounded-lg bg-gradient-to-br from-indigo-500 to-purple-600 flex items-center justify-center font-bold text-white text-lg">X</div>
+                <div>
+                    <h1 class="text-xl font-bold bg-gradient-to-r from-indigo-400 to-purple-400 bg-clip-text text-transparent">CrossDoc</h1>
+                    <p class="text-xs text-slate-500">Insurance Claims Evidence Review</p>
+                </div>
+            </div>
+            <span class="text-xs text-slate-600 font-mono">PS02 • NexusTiQ 24</span>
+        </div>
+    </header>
+
+    <!-- Main Content -->
+    <main class="max-w-7xl mx-auto px-6 py-8">
+
+        <!-- Document Input Section -->
+        <section id="input-section">
+            <div class="flex items-center justify-between mb-6">
+                <h2 class="text-lg font-semibold text-slate-300">📄 Submit Claim Documents</h2>
+                <div class="flex items-center gap-3">
+                    <select id="demo-selector" onchange="loadDemo(this.value)" class="text-sm rounded-lg px-3 py-1.5">
+                        <option value="">Load Demo Case...</option>
+                        <option value="case_1">Case 1: Clean Claim</option>
+                        <option value="case_2">Case 2: Date Contradiction</option>
+                        <option value="case_3">Case 3: Damage Contradiction</option>
+                        <option value="case_4">Case 4: Late Filing</option>
+                        <option value="case_5">Case 5: Missing FIR</option>
+                        <option value="case_6">Case 6: Policy Exclusion</option>
+                    </select>
+                </div>
+            </div>
+
+            <div class="grid grid-cols-1 lg:grid-cols-3 gap-4 mb-6">
+                <!-- Claim Form -->
+                <div class="glass-card rounded-xl p-4 glow-border">
+                    <label class="block text-sm font-medium text-indigo-400 mb-2">Claim Form</label>
+                    <textarea id="claim-form" rows="10" placeholder="Paste the claim form text here..." class="w-full rounded-lg p-3 text-sm resize-none"></textarea>
+                </div>
+
+                <!-- Customer Description -->
+                <div class="glass-card rounded-xl p-4 glow-border">
+                    <label class="block text-sm font-medium text-indigo-400 mb-2">Customer Incident Description</label>
+                    <textarea id="customer-desc" rows="10" placeholder="Paste the customer's incident description..." class="w-full rounded-lg p-3 text-sm resize-none"></textarea>
+                </div>
+
+                <!-- Third Document -->
+                <div class="glass-card rounded-xl p-4 glow-border">
+                    <div class="flex items-center justify-between mb-2">
+                        <label class="text-sm font-medium text-indigo-400">Supporting Document</label>
+                        <select id="third-doc-type" class="text-xs rounded-md px-2 py-1">
+                            <option value="repair_estimate">Repair Estimate</option>
+                            <option value="fir">FIR (Police Report)</option>
+                        </select>
+                    </div>
+                    <textarea id="third-doc" rows="10" placeholder="Paste the FIR or repair estimate..." class="w-full rounded-lg p-3 text-sm resize-none"></textarea>
+                </div>
+            </div>
+
+            <!-- Submit Button -->
+            <div class="text-center">
+                <button id="review-btn" onclick="submitReview()"
+                    class="px-8 py-3 bg-gradient-to-r from-indigo-600 to-purple-600 text-white font-semibold rounded-xl hover:from-indigo-500 hover:to-purple-500 transition-all duration-300 shadow-lg shadow-indigo-500/20 hover:shadow-indigo-500/40">
+                    🔍 Run Evidence Review
+                </button>
+            </div>
+        </section>
+
+        <!-- Loading State -->
+        <div id="loading" class="hidden text-center py-12">
+            <div class="inline-flex items-center gap-3 glass-card rounded-xl px-8 py-4">
+                <div class="relative">
+                    <div class="w-4 h-4 rounded-full bg-indigo-500"></div>
+                    <div class="absolute inset-0 rounded-full bg-indigo-500 pulse-ring"></div>
+                </div>
+                <span class="text-slate-300">Analyzing documents<span class="loading-dots"></span></span>
+            </div>
+            <div class="mt-4 text-xs text-slate-500 max-w-md mx-auto">
+                <p>Extracting facts → CrossDoc comparison → Policy evaluation → Decision routing</p>
+            </div>
+        </div>
+
+        <!-- Results Section -->
+        <section id="results" class="hidden mt-8 space-y-6 fade-in">
+
+            <!-- Decision Banner -->
+            <div id="decision-banner" class="rounded-xl p-6 text-center">
+                <div class="text-4xl font-extrabold mb-2" id="decision-icon"></div>
+                <div class="text-2xl font-bold" id="decision-text"></div>
+                <div class="mt-3 text-sm opacity-80 max-w-2xl mx-auto" id="decision-reasons"></div>
+            </div>
+
+            <!-- CrossDoc Matrix -->
+            <div class="glass-card rounded-xl p-6 glow-border">
+                <h3 class="text-lg font-semibold text-slate-300 mb-4">🔀 CrossDoc Evidence Matrix</h3>
+                <div class="overflow-x-auto">
+                    <table class="w-full text-sm">
+                        <thead>
+                            <tr class="border-b border-slate-700">
+                                <th class="text-left py-3 px-4 text-slate-400 font-medium">Field</th>
+                                <th class="text-left py-3 px-4 text-slate-400 font-medium">Status</th>
+                                <th class="text-left py-3 px-4 text-slate-400 font-medium">Values Across Documents</th>
+                                <th class="text-left py-3 px-4 text-slate-400 font-medium">Explanation</th>
+                            </tr>
+                        </thead>
+                        <tbody id="matrix-body"></tbody>
+                    </table>
+                </div>
+            </div>
+
+            <!-- Policy Findings -->
+            <div class="glass-card rounded-xl p-6 glow-border">
+                <h3 class="text-lg font-semibold text-slate-300 mb-4">📋 Policy Evaluation</h3>
+                <div id="policy-findings" class="space-y-3"></div>
+            </div>
+
+            <!-- AI Synthesis -->
+            <div class="glass-card rounded-xl p-6 glow-border">
+                <h3 class="text-lg font-semibold text-slate-300 mb-4">📝 Investigation Summary</h3>
+                <div id="synthesis" class="text-sm text-slate-300 leading-relaxed whitespace-pre-wrap"></div>
+            </div>
+
+            <!-- Extraction Details (Collapsible) -->
+            <details class="glass-card rounded-xl glow-border">
+                <summary class="p-6 cursor-pointer text-lg font-semibold text-slate-300 hover:text-indigo-400 transition-colors">
+                    🔎 Raw Extraction Details
+                </summary>
+                <div id="extraction-details" class="px-6 pb-6"></div>
+            </details>
+        </section>
+    </main>
+
+    <!-- Footer -->
+    <footer class="border-t border-indigo-500/10 py-4 mt-12">
+        <p class="text-center text-xs text-slate-600">CrossDoc • Evidence-First Claims Review • NexusTiQ 24 Hackathon</p>
+    </footer>
+
+    <script>
+        // Demo cases injected by Jinja2
+        const demoCases = {{ demo_cases | safe }};
+
+        function loadDemo(caseId) {
+            if (!caseId || !demoCases[caseId]) return;
+
+            const raw = demoCases[caseId];
+            const sections = raw.split('---').map(s => s.trim());
+
+            if (sections.length >= 3) {
+                document.getElementById('claim-form').value = sections[0];
+                document.getElementById('customer-desc').value = sections[1];
+                document.getElementById('third-doc').value = sections[2];
+
+                // Auto-detect third doc type
+                const thirdLower = sections[2].toLowerCase();
+                if (thirdLower.includes('fir') || thirdLower.includes('officer') || thirdLower.includes('incident log')) {
+                    document.getElementById('third-doc-type').value = 'fir';
+                } else {
+                    document.getElementById('third-doc-type').value = 'repair_estimate';
+                }
+            }
+
+            // Hide previous results
+            document.getElementById('results').classList.add('hidden');
+        }
+
+        async function submitReview() {
+            const claimForm = document.getElementById('claim-form').value.trim();
+            const customerDesc = document.getElementById('customer-desc').value.trim();
+            const thirdDoc = document.getElementById('third-doc').value.trim();
+            const thirdDocType = document.getElementById('third-doc-type').value;
+
+            if (!claimForm || !customerDesc || !thirdDoc) {
+                alert('Please fill in all three document fields.');
+                return;
+            }
+
+            // Show loading
+            document.getElementById('loading').classList.remove('hidden');
+            document.getElementById('results').classList.add('hidden');
+            document.getElementById('review-btn').disabled = true;
+            document.getElementById('review-btn').textContent = 'Analyzing...';
+
+            try {
+                const formData = new FormData();
+                formData.append('claim_form', claimForm);
+                formData.append('customer_description', customerDesc);
+                formData.append('third_doc', thirdDoc);
+                formData.append('third_doc_type', thirdDocType);
+
+                const response = await fetch('/api/review', {
+                    method: 'POST',
+                    body: formData
+                });
+
+                const data = await response.json();
+                renderResults(data);
+
+            } catch (err) {
+                alert('Error: ' + err.message);
+            } finally {
+                document.getElementById('loading').classList.add('hidden');
+                document.getElementById('review-btn').disabled = false;
+                document.getElementById('review-btn').textContent = '🔍 Run Evidence Review';
+            }
+        }
+
+        function renderResults(data) {
+            const results = document.getElementById('results');
+            results.classList.remove('hidden');
+
+            // Decision Banner
+            const banner = document.getElementById('decision-banner');
+            const icons = {
+                'APPROVE': '✅', 'REJECT': '🚫',
+                'REQUEST_INFO': '📋', 'ESCALATE': '⚠️'
+            };
+            const labels = {
+                'APPROVE': 'CLAIM APPROVED',
+                'REJECT': 'CLAIM REJECTED',
+                'REQUEST_INFO': 'ADDITIONAL INFORMATION REQUIRED',
+                'ESCALATE': 'ESCALATED FOR HUMAN REVIEW'
+            };
+
+            banner.className = `rounded-xl p-6 text-center decision-${data.decision.toLowerCase()}`;
+            document.getElementById('decision-icon').textContent = icons[data.decision] || '❓';
+            document.getElementById('decision-text').textContent = labels[data.decision] || data.decision;
+            document.getElementById('decision-reasons').innerHTML = data.reasons.map(r =>
+                `<p class="mb-1">• ${escapeHtml(r)}</p>`
+            ).join('');
+
+            // CrossDoc Matrix
+            const matrixBody = document.getElementById('matrix-body');
+            matrixBody.innerHTML = '';
+
+            if (data.crossdoc && data.crossdoc.comparisons) {
+                data.crossdoc.comparisons.forEach(comp => {
+                    const statusClass = `status-${comp.status.toLowerCase()}`;
+                    const valuesHtml = Object.entries(comp.original_values || comp.values || {}).map(([src, val]) =>
+                        `<span class="inline-block mr-3"><span class="text-slate-500 text-xs">${src}:</span> <span class="font-medium">${escapeHtml(String(val))}</span></span>`
+                    ).join('<br>');
+
+                    matrixBody.innerHTML += `
+                        <tr class="matrix-row border-b border-slate-800">
+                            <td class="py-3 px-4 font-medium text-slate-300">${escapeHtml(comp.field)}</td>
+                            <td class="py-3 px-4"><span class="px-3 py-1 rounded-full text-xs font-semibold ${statusClass}">${comp.status}</span></td>
+                            <td class="py-3 px-4 text-slate-400">${valuesHtml || '—'}</td>
+                            <td class="py-3 px-4 text-slate-500 text-xs">${escapeHtml(comp.explanation)}</td>
+                        </tr>`;
+                });
+            }
+
+            // Policy Findings
+            const policyDiv = document.getElementById('policy-findings');
+            policyDiv.innerHTML = '';
+
+            if (data.policy_findings) {
+                data.policy_findings.forEach(f => {
+                    const icon = f.triggered ? '🚨' : '✅';
+                    const bg = f.triggered ? 'border-red-500/30 bg-red-500/5' : 'border-green-500/30 bg-green-500/5';
+                    policyDiv.innerHTML += `
+                        <div class="p-4 rounded-lg border ${bg}">
+                            <div class="flex items-start gap-2">
+                                <span class="text-lg">${icon}</span>
+                                <div>
+                                    <p class="font-medium text-sm text-slate-300">${escapeHtml(f.rule)}${f.reference ? ` (${escapeHtml(f.reference)})` : ''}</p>
+                                    <p class="text-xs text-slate-400 mt-1">${escapeHtml(f.detail)}</p>
+                                    ${f.clause ? `<p class="text-xs text-slate-500 mt-2 italic border-l-2 border-indigo-500/30 pl-3">"${escapeHtml(f.clause)}"</p>` : ''}
+                                </div>
+                            </div>
+                        </div>`;
+                });
+            }
+
+            // Synthesis
+            document.getElementById('synthesis').textContent = data.synthesis || 'No synthesis generated.';
+
+            // Extraction Details
+            const extractionDiv = document.getElementById('extraction-details');
+            extractionDiv.innerHTML = '';
+            if (data.extractions) {
+                data.extractions.forEach(ext => {
+                    extractionDiv.innerHTML += `
+                        <div class="mb-4 p-3 rounded-lg bg-slate-800/50">
+                            <p class="text-xs font-semibold text-indigo-400 mb-2">${escapeHtml(ext.source)} (confidence: ${ext.confidence})</p>
+                            <pre class="text-xs text-slate-400 overflow-x-auto">${escapeHtml(JSON.stringify(ext, null, 2))}</pre>
+                        </div>`;
+                });
+            }
+
+            // Scroll to results
+            results.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        }
+
+        function escapeHtml(text) {
+            if (!text) return '';
+            const div = document.createElement('div');
+            div.textContent = text;
+            return div.innerHTML;
+        }
+    </script>
+</body>
+</html>
