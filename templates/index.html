@@ -1,15 +1,22 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>CrossDoc — Insurance Claims Evidence Review</title>
     <meta name="description" content="AI-powered cross-document evidence reconciliation for motor insurance claims">
     <script src="https://cdn.tailwindcss.com"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap"
+        rel="stylesheet">
     <style>
-        * { font-family: 'Inter', sans-serif; }
-        body { background: #0a0e1a; }
+        * {
+            font-family: 'Inter', sans-serif;
+        }
+
+        body {
+            background: #0a0e1a;
+        }
 
         .glass-card {
             background: rgba(15, 23, 42, 0.7);
@@ -17,18 +24,59 @@
             border: 1px solid rgba(99, 102, 241, 0.15);
         }
 
-        .glow-border { box-shadow: 0 0 20px rgba(99, 102, 241, 0.1); }
+        .glow-border {
+            box-shadow: 0 0 20px rgba(99, 102, 241, 0.1);
+        }
 
-        .status-match { background: rgba(34, 197, 94, 0.15); color: #4ade80; border: 1px solid rgba(34, 197, 94, 0.3); }
-        .status-compatible { background: rgba(59, 130, 246, 0.15); color: #60a5fa; border: 1px solid rgba(59, 130, 246, 0.3); }
-        .status-contradiction { background: rgba(239, 68, 68, 0.15); color: #f87171; border: 1px solid rgba(239, 68, 68, 0.3); }
-        .status-missing { background: rgba(250, 204, 21, 0.15); color: #fbbf24; border: 1px solid rgba(250, 204, 21, 0.3); }
-        .status-ambiguous { background: rgba(168, 85, 247, 0.15); color: #c084fc; border: 1px solid rgba(168, 85, 247, 0.3); }
+        .status-match {
+            background: rgba(34, 197, 94, 0.15);
+            color: #4ade80;
+            border: 1px solid rgba(34, 197, 94, 0.3);
+        }
 
-        .decision-approve { background: linear-gradient(135deg, rgba(34, 197, 94, 0.2), rgba(16, 185, 129, 0.1)); border: 2px solid #22c55e; }
-        .decision-reject { background: linear-gradient(135deg, rgba(239, 68, 68, 0.2), rgba(220, 38, 38, 0.1)); border: 2px solid #ef4444; }
-        .decision-request_info { background: linear-gradient(135deg, rgba(250, 204, 21, 0.2), rgba(234, 179, 8, 0.1)); border: 2px solid #eab308; }
-        .decision-escalate { background: linear-gradient(135deg, rgba(249, 115, 22, 0.2), rgba(234, 88, 12, 0.1)); border: 2px solid #f97316; }
+        .status-compatible {
+            background: rgba(59, 130, 246, 0.15);
+            color: #60a5fa;
+            border: 1px solid rgba(59, 130, 246, 0.3);
+        }
+
+        .status-contradiction {
+            background: rgba(239, 68, 68, 0.15);
+            color: #f87171;
+            border: 1px solid rgba(239, 68, 68, 0.3);
+        }
+
+        .status-missing {
+            background: rgba(250, 204, 21, 0.15);
+            color: #fbbf24;
+            border: 1px solid rgba(250, 204, 21, 0.3);
+        }
+
+        .status-ambiguous {
+            background: rgba(168, 85, 247, 0.15);
+            color: #c084fc;
+            border: 1px solid rgba(168, 85, 247, 0.3);
+        }
+
+        .decision-approve {
+            background: linear-gradient(135deg, rgba(34, 197, 94, 0.2), rgba(16, 185, 129, 0.1));
+            border: 2px solid #22c55e;
+        }
+
+        .decision-reject {
+            background: linear-gradient(135deg, rgba(239, 68, 68, 0.2), rgba(220, 38, 38, 0.1));
+            border: 2px solid #ef4444;
+        }
+
+        .decision-request_info {
+            background: linear-gradient(135deg, rgba(250, 204, 21, 0.2), rgba(234, 179, 8, 0.1));
+            border: 2px solid #eab308;
+        }
+
+        .decision-escalate {
+            background: linear-gradient(135deg, rgba(249, 115, 22, 0.2), rgba(234, 88, 12, 0.1));
+            border: 2px solid #f97316;
+        }
 
         textarea {
             background: rgba(15, 23, 42, 0.5);
@@ -36,29 +84,73 @@
             color: #e2e8f0;
             transition: border-color 0.3s;
         }
-        textarea:focus { border-color: rgba(99, 102, 241, 0.6); outline: none; }
-        textarea::placeholder { color: rgba(148, 163, 184, 0.5); }
+
+        textarea:focus {
+            border-color: rgba(99, 102, 241, 0.6);
+            outline: none;
+        }
+
+        textarea::placeholder {
+            color: rgba(148, 163, 184, 0.5);
+        }
 
         .pulse-ring {
             animation: pulse-ring 1.5s cubic-bezier(0.215, 0.61, 0.355, 1) infinite;
         }
+
         @keyframes pulse-ring {
-            0% { transform: scale(0.8); opacity: 1; }
-            80%, 100% { transform: scale(1.3); opacity: 0; }
+            0% {
+                transform: scale(0.8);
+                opacity: 1;
+            }
+
+            80%,
+            100% {
+                transform: scale(1.3);
+                opacity: 0;
+            }
         }
 
-        .fade-in { animation: fadeIn 0.5s ease-out; }
-        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+        .fade-in {
+            animation: fadeIn 0.5s ease-out;
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(10px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
 
         .loading-dots::after {
             content: '';
             animation: dots 1.5s steps(4, end) infinite;
         }
+
         @keyframes dots {
-            0%, 20% { content: ''; }
-            40% { content: '.'; }
-            60% { content: '..'; }
-            80%, 100% { content: '...'; }
+
+            0%,
+            20% {
+                content: '';
+            }
+
+            40% {
+                content: '.';
+            }
+
+            60% {
+                content: '..';
+            }
+
+            80%,
+            100% {
+                content: '...';
+            }
         }
 
         select {
@@ -67,19 +159,65 @@
             color: #e2e8f0;
         }
 
-        .matrix-row { transition: all 0.3s ease; }
-        .matrix-row:hover { background: rgba(99, 102, 241, 0.05); }
+        .matrix-row {
+            transition: all 0.3s ease;
+        }
+
+        .matrix-row:hover {
+            background: rgba(99, 102, 241, 0.05);
+        }
+
+        .upload-zone {
+            border: 2px dashed rgba(99, 102, 241, 0.3);
+            background: rgba(15, 23, 42, 0.3);
+            transition: all 0.3s;
+            cursor: pointer;
+        }
+
+        .upload-zone:hover,
+        .upload-zone.dragover {
+            border-color: rgba(99, 102, 241, 0.6);
+            background: rgba(99, 102, 241, 0.05);
+        }
+
+        .upload-zone.has-file {
+            border-color: rgba(34, 197, 94, 0.5);
+            background: rgba(34, 197, 94, 0.05);
+        }
+
+        .tab-btn {
+            padding: 4px 12px;
+            font-size: 0.75rem;
+            border-radius: 6px;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .tab-btn.active {
+            background: rgba(99, 102, 241, 0.3);
+            color: #a5b4fc;
+        }
+
+        .tab-btn:not(.active) {
+            background: transparent;
+            color: #64748b;
+        }
     </style>
 </head>
+
 <body class="min-h-screen text-slate-200">
 
     <!-- Header -->
     <header class="border-b border-indigo-500/10 py-4 px-6">
         <div class="max-w-7xl mx-auto flex items-center justify-between">
             <div class="flex items-center gap-3">
-                <div class="w-10 h-10 rounded-lg bg-gradient-to-br from-indigo-500 to-purple-600 flex items-center justify-center font-bold text-white text-lg">X</div>
+                <div
+                    class="w-10 h-10 rounded-lg bg-gradient-to-br from-indigo-500 to-purple-600 flex items-center justify-center font-bold text-white text-lg">
+                    X</div>
                 <div>
-                    <h1 class="text-xl font-bold bg-gradient-to-r from-indigo-400 to-purple-400 bg-clip-text text-transparent">CrossDoc</h1>
+                    <h1
+                        class="text-xl font-bold bg-gradient-to-r from-indigo-400 to-purple-400 bg-clip-text text-transparent">
+                        CrossDoc</h1>
                     <p class="text-xs text-slate-500">Insurance Claims Evidence Review</p>
                 </div>
             </div>
@@ -110,26 +248,93 @@
             <div class="grid grid-cols-1 lg:grid-cols-3 gap-4 mb-6">
                 <!-- Claim Form -->
                 <div class="glass-card rounded-xl p-4 glow-border">
-                    <label class="block text-sm font-medium text-indigo-400 mb-2">Claim Form</label>
-                    <textarea id="claim-form" rows="10" placeholder="Paste the claim form text here..." class="w-full rounded-lg p-3 text-sm resize-none"></textarea>
+                    <div class="flex items-center justify-between mb-2">
+                        <label class="text-sm font-medium text-indigo-400">Claim Form</label>
+                        <div class="flex gap-1">
+                            <button class="tab-btn active"
+                                onclick="switchTab('claim-form', 'paste', this)">Paste</button>
+                            <button class="tab-btn" onclick="switchTab('claim-form', 'upload', this)">Upload</button>
+                        </div>
+                    </div>
+                    <div id="claim-form-paste">
+                        <textarea id="claim-form" rows="10" placeholder="Paste the claim form text here..."
+                            class="w-full rounded-lg p-3 text-sm resize-none"></textarea>
+                    </div>
+                    <div id="claim-form-upload" class="hidden">
+                        <div class="upload-zone rounded-lg p-6 text-center" id="claim-form-dropzone"
+                            ondragover="handleDragOver(event, this)" ondragleave="handleDragLeave(event, this)"
+                            ondrop="handleDrop(event, 'claim-form-file', this)"
+                            onclick="document.getElementById('claim-form-file').click()">
+                            <input type="file" id="claim-form-file" accept=".txt,.pdf,.png,.jpg,.jpeg" class="hidden"
+                                onchange="handleFileSelect(this, 'claim-form-dropzone')">
+                            <p class="text-slate-400 text-sm">📎 Drop file or click to upload</p>
+                            <p class="text-slate-600 text-xs mt-1">TXT, PDF, PNG, JPG (max 10MB)</p>
+                            <p id="claim-form-filename" class="text-green-400 text-xs mt-2 hidden"></p>
+                        </div>
+                    </div>
                 </div>
 
                 <!-- Customer Description -->
                 <div class="glass-card rounded-xl p-4 glow-border">
-                    <label class="block text-sm font-medium text-indigo-400 mb-2">Customer Incident Description</label>
-                    <textarea id="customer-desc" rows="10" placeholder="Paste the customer's incident description..." class="w-full rounded-lg p-3 text-sm resize-none"></textarea>
+                    <div class="flex items-center justify-between mb-2">
+                        <label class="text-sm font-medium text-indigo-400">Customer Incident Description</label>
+                        <div class="flex gap-1">
+                            <button class="tab-btn active"
+                                onclick="switchTab('customer-desc', 'paste', this)">Paste</button>
+                            <button class="tab-btn" onclick="switchTab('customer-desc', 'upload', this)">Upload</button>
+                        </div>
+                    </div>
+                    <div id="customer-desc-paste">
+                        <textarea id="customer-desc" rows="10"
+                            placeholder="Paste the customer's incident description..."
+                            class="w-full rounded-lg p-3 text-sm resize-none"></textarea>
+                    </div>
+                    <div id="customer-desc-upload" class="hidden">
+                        <div class="upload-zone rounded-lg p-6 text-center" id="customer-desc-dropzone"
+                            ondragover="handleDragOver(event, this)" ondragleave="handleDragLeave(event, this)"
+                            ondrop="handleDrop(event, 'customer-desc-file', this)"
+                            onclick="document.getElementById('customer-desc-file').click()">
+                            <input type="file" id="customer-desc-file" accept=".txt,.pdf,.png,.jpg,.jpeg" class="hidden"
+                                onchange="handleFileSelect(this, 'customer-desc-dropzone')">
+                            <p class="text-slate-400 text-sm">📎 Drop file or click to upload</p>
+                            <p class="text-slate-600 text-xs mt-1">TXT, PDF, PNG, JPG (max 10MB)</p>
+                            <p id="customer-desc-filename" class="text-green-400 text-xs mt-2 hidden"></p>
+                        </div>
+                    </div>
                 </div>
 
                 <!-- Third Document -->
                 <div class="glass-card rounded-xl p-4 glow-border">
                     <div class="flex items-center justify-between mb-2">
                         <label class="text-sm font-medium text-indigo-400">Supporting Document</label>
-                        <select id="third-doc-type" class="text-xs rounded-md px-2 py-1">
-                            <option value="repair_estimate">Repair Estimate</option>
-                            <option value="fir">FIR (Police Report)</option>
-                        </select>
+                        <div class="flex gap-2">
+                            <select id="third-doc-type" class="text-xs rounded-md px-2 py-1">
+                                <option value="repair_estimate">Repair Estimate</option>
+                                <option value="fir">FIR (Police Report)</option>
+                            </select>
+                            <div class="flex gap-1">
+                                <button class="tab-btn active"
+                                    onclick="switchTab('third-doc', 'paste', this)">Paste</button>
+                                <button class="tab-btn" onclick="switchTab('third-doc', 'upload', this)">Upload</button>
+                            </div>
+                        </div>
                     </div>
-                    <textarea id="third-doc" rows="10" placeholder="Paste the FIR or repair estimate..." class="w-full rounded-lg p-3 text-sm resize-none"></textarea>
+                    <div id="third-doc-paste">
+                        <textarea id="third-doc" rows="10" placeholder="Paste the FIR or repair estimate..."
+                            class="w-full rounded-lg p-3 text-sm resize-none"></textarea>
+                    </div>
+                    <div id="third-doc-upload" class="hidden">
+                        <div class="upload-zone rounded-lg p-6 text-center" id="third-doc-dropzone"
+                            ondragover="handleDragOver(event, this)" ondragleave="handleDragLeave(event, this)"
+                            ondrop="handleDrop(event, 'third-doc-file', this)"
+                            onclick="document.getElementById('third-doc-file').click()">
+                            <input type="file" id="third-doc-file" accept=".txt,.pdf,.png,.jpg,.jpeg" class="hidden"
+                                onchange="handleFileSelect(this, 'third-doc-dropzone')">
+                            <p class="text-slate-400 text-sm">📎 Drop file or click to upload</p>
+                            <p class="text-slate-600 text-xs mt-1">TXT, PDF, PNG, JPG (max 10MB)</p>
+                            <p id="third-doc-filename" class="text-green-400 text-xs mt-2 hidden"></p>
+                        </div>
+                    </div>
                 </div>
             </div>
 
@@ -198,7 +403,8 @@
 
             <!-- Extraction Details (Collapsible) -->
             <details class="glass-card rounded-xl glow-border">
-                <summary class="p-6 cursor-pointer text-lg font-semibold text-slate-300 hover:text-indigo-400 transition-colors">
+                <summary
+                    class="p-6 cursor-pointer text-lg font-semibold text-slate-300 hover:text-indigo-400 transition-colors">
                     🔎 Raw Extraction Details
                 </summary>
                 <div id="extraction-details" class="px-6 pb-6"></div>
@@ -208,7 +414,8 @@
 
     <!-- Footer -->
     <footer class="border-t border-indigo-500/10 py-4 mt-12">
-        <p class="text-center text-xs text-slate-600">CrossDoc • Evidence-First Claims Review • NexusTiQ 24 Hackathon</p>
+        <p class="text-center text-xs text-slate-600">CrossDoc • Evidence-First Claims Review • NexusTiQ 24 Hackathon
+        </p>
     </footer>
 
     <script>
@@ -240,13 +447,24 @@
         }
 
         async function submitReview() {
-            const claimForm = document.getElementById('claim-form').value.trim();
-            const customerDesc = document.getElementById('customer-desc').value.trim();
-            const thirdDoc = document.getElementById('third-doc').value.trim();
+            const claimFormText = document.getElementById('claim-form').value.trim();
+            const customerDescText = document.getElementById('customer-desc').value.trim();
+            const thirdDocText = document.getElementById('third-doc').value.trim();
             const thirdDocType = document.getElementById('third-doc-type').value;
 
-            if (!claimForm || !customerDesc || !thirdDoc) {
-                alert('Please fill in all three document fields.');
+            const claimFormFile = document.getElementById('claim-form-file').files[0];
+            const customerDescFile = document.getElementById('customer-desc-file').files[0];
+            const thirdDocFile = document.getElementById('third-doc-file').files[0];
+
+            const hasAnyFile = claimFormFile || customerDescFile || thirdDocFile;
+
+            // Validate: each doc needs either text or file
+            const claimOk = claimFormText || claimFormFile;
+            const custOk = customerDescText || customerDescFile;
+            const thirdOk = thirdDocText || thirdDocFile;
+
+            if (!claimOk || !custOk || !thirdOk) {
+                alert('Please provide all three documents (paste text or upload a file for each).');
                 return;
             }
 
@@ -258,18 +476,37 @@
 
             try {
                 const formData = new FormData();
-                formData.append('claim_form', claimForm);
-                formData.append('customer_description', customerDesc);
-                formData.append('third_doc', thirdDoc);
                 formData.append('third_doc_type', thirdDocType);
 
-                const response = await fetch('/api/review', {
-                    method: 'POST',
-                    body: formData
-                });
+                if (hasAnyFile) {
+                    // Use /api/upload endpoint
+                    if (claimFormFile) formData.append('claim_form_file', claimFormFile);
+                    else formData.append('claim_form_text', claimFormText);
 
-                const data = await response.json();
-                renderResults(data);
+                    if (customerDescFile) formData.append('customer_desc_file', customerDescFile);
+                    else formData.append('customer_desc_text', customerDescText);
+
+                    if (thirdDocFile) formData.append('third_doc_file', thirdDocFile);
+                    else formData.append('third_doc_text', thirdDocText);
+
+                    const response = await fetch('/api/upload', { method: 'POST', body: formData });
+                    const data = await response.json();
+
+                    if (data.error) {
+                        alert('Error: ' + data.error);
+                        return;
+                    }
+                    renderResults(data);
+                } else {
+                    // Use existing /api/review endpoint (text only)
+                    formData.append('claim_form', claimFormText);
+                    formData.append('customer_description', customerDescText);
+                    formData.append('third_doc', thirdDocText);
+
+                    const response = await fetch('/api/review', { method: 'POST', body: formData });
+                    const data = await response.json();
+                    renderResults(data);
+                }
 
             } catch (err) {
                 alert('Error: ' + err.message);
@@ -277,6 +514,49 @@
                 document.getElementById('loading').classList.add('hidden');
                 document.getElementById('review-btn').disabled = false;
                 document.getElementById('review-btn').textContent = '🔍 Run Evidence Review';
+            }
+        }
+
+        // --- Upload helpers ---
+        function switchTab(docId, mode, btn) {
+            document.getElementById(docId + '-paste').classList.toggle('hidden', mode !== 'paste');
+            document.getElementById(docId + '-upload').classList.toggle('hidden', mode !== 'upload');
+            btn.parentElement.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+            btn.classList.add('active');
+        }
+
+        function handleDragOver(e, zone) {
+            e.preventDefault();
+            zone.classList.add('dragover');
+        }
+
+        function handleDragLeave(e, zone) {
+            e.preventDefault();
+            zone.classList.remove('dragover');
+        }
+
+        function handleDrop(e, fileInputId, zone) {
+            e.preventDefault();
+            zone.classList.remove('dragover');
+            const files = e.dataTransfer.files;
+            if (files.length > 0) {
+                const input = document.getElementById(fileInputId);
+                input.files = files;
+                handleFileSelect(input, zone.id);
+            }
+        }
+
+        function handleFileSelect(input, dropzoneId) {
+            const file = input.files[0];
+            const zone = document.getElementById(dropzoneId);
+            const fnameEl = document.getElementById(dropzoneId.replace('-dropzone', '-filename'));
+            if (file) {
+                zone.classList.add('has-file');
+                fnameEl.textContent = '✅ ' + file.name + ' (' + (file.size / 1024).toFixed(1) + ' KB)';
+                fnameEl.classList.remove('hidden');
+            } else {
+                zone.classList.remove('has-file');
+                fnameEl.classList.add('hidden');
             }
         }
 
@@ -375,4 +655,5 @@
         }
     </script>
 </body>
+
 </html>
